@@ -5,6 +5,7 @@ import br.ufc.crateus.npds.events.exception.RecordNotFoundException;
 import br.ufc.crateus.npds.events.models.Event;
 import br.ufc.crateus.npds.events.repository.EventRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,8 +19,8 @@ public class EventService {
     private EventRepository eventRepository;
 
 
-    public List<Event> getAll(){
-        List<Event> events = (List<Event>) eventRepository.findAll();
+    public List<Event> getAll(int pageNumber, int pageSize){
+        List<Event> events =  eventRepository.findAll(PageRequest.of(pageNumber, pageSize));
         return events;
     }
 
@@ -36,8 +37,10 @@ public class EventService {
         else throw new RecordNotFoundException();
     }
 
-    public List<Event> getByQuery(String query) {
-        List<Event> events = eventRepository.findByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCaseOrLocalizationContainingIgnoreCaseOrOrganizerContainingIgnoreCase(query, query, query, query);
+    public List<Event> getByQuery(String query, int pageNumber, int pageSize ) {
+        List<Event> events =
+                eventRepository.
+                findByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCaseOrLocalizationContainingIgnoreCaseOrOrganizerContainingIgnoreCase(query, query, query, query, PageRequest.of(pageNumber, pageSize));
         return events;
     }
 }
